@@ -1,7 +1,22 @@
 import { useState } from 'react';
+import { styled } from 'styled-components';
 import reactLogo from './assets/react.svg';
 import viteLogo from '../public/vite.svg';
 import './App.css';
+
+import Card from '@/components/Card';
+
+const Wrapper = styled.div`
+    display: flex;
+`;
+
+const LeftWrapper = styled.div`
+    flex-basis: 40%;
+`;
+
+const RightWrapper = styled.div`
+    flex-basis: 60%;
+`;
 
 function App() {
     const [count, setCount] = useState(0);
@@ -24,6 +39,12 @@ function App() {
                 </p>
             </div>
             <p className='read-the-docs'>Click on the Vite and React logos to learn more</p>
+            <Wrapper>
+                <LeftWrapper>
+                    <Card />
+                </LeftWrapper>
+                <RightWrapper>Right Area</RightWrapper>
+            </Wrapper>
         </>
     );
 }
