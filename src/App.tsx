@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import reactLogo from './assets/react.svg';
-import viteLogo from '../public/vite.svg';
-import './App.css';
+import reactLogo from '@/assets/react.svg';
+import viteLogo from '/public/vite.svg';
+import '@/App.css';
 
 import Card from '@/components/Card';
 
