@@ -11,6 +11,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "animejs": "^3.2.1",
     "axios": "^1.6.2",
     "d3": "^7.8.5",
