@@ -14,7 +14,7 @@ const LeftWrapper = styled.div`
 `;
 
 const RightWrapper = styled.div`
-    flex-basis: 60%;
+    flex-basis: 70%;
 `;
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
     return (
         <Wrapper>
             <LeftWrapper>
-                <Card />
+                <Card isHover={false} />
             </LeftWrapper>
             <RightWrapper>
                 <ReactSvgZoomMap
