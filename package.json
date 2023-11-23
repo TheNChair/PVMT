@@ -11,14 +11,23 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "animejs": "^3.2.1",
+    "axios": "^1.6.2",
+    "csv-parser": "^3.0.0",
+    "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "topojson-client": "^3.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.9.1",
+    "@types/animejs": "^3.1.11",
+    "@types/d3": "^7.4.3",
+    "@types/node": "^20.9.4",
+    "@types/prop-types": "^15.7.10",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/topojson-client": "^3.1.4",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
