@@ -11,17 +11,19 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "csv-parser": "^3.0.0",
     "animejs": "^3.2.1",
     "axios": "^1.6.2",
+    "csv-parser": "^3.0.0",
     "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "styled-components": "^6.1.1",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
     "@types/animejs": "^3.1.11",
     "@types/d3": "^7.4.3",
+    "@types/node": "^20.9.4",
     "@types/prop-types": "^15.7.10",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
@@ -31,6 +33,7 @@
     "@vitejs/plugin-react": "^4.0.3",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",

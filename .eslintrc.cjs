@@ -48,8 +48,11 @@ module.exports = {
     },
     settings: {
         'import/resolver': {
+            typescript: {
+                project: ['tsconfig.json', 'package/tsconfig.json']
+            },
             node: {
-                extensions: ['.js', '.jsx', '.ts', '.tsx']
+                project: ['tsconfig.json', 'package/tsconfig.json']
             }
         }
     }

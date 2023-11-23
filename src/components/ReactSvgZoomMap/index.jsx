@@ -5,7 +5,7 @@ import * as topojson from 'topojson-client';
 import anime from 'animejs';
 import axios from 'axios';
 
-import './ReactSvgZoomMap.css';
+import '@/components/ReactSvgZoomMap/ReactSvgZoomMap.css';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -41,8 +41,8 @@ export default class ReactSvgZoomMap extends Component {
     };
 
     state = {
-        svgWidth: 1280,
-        svgHeight: 720,
+        svgWidth: 1008,
+        svgHeight: 756,
         svgScale: 10000,
 
         countyJsonData: null,
