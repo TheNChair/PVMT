@@ -6,6 +6,12 @@ import anime from 'animejs';
 import axios from 'axios';
 import Card from '@/components/Card';
 import '@/components/ReactSvgZoomMap/ReactSvgZoomMap.css';
+import MAIN_LOGO from '@/assets/main-page-logo.svg?react';
+import PERCENTAGE_INFO from '@/assets/mapTool/percentage-info.png';
+import ROOM_IN from '@/assets/mapTool/room-in.svg?react';
+import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
+import REFRESH from '@/assets/mapTool/refresh.svg?react';
+import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -312,11 +318,7 @@ export default class ReactSvgZoomMap extends Component {
                     show={loaded && nowSelect.length > 0}
                     labelText={this.getNowSelectString()}
                 />
-                {/* <div className='labels'>
-                    {this.getNowSelectString()}
-                    {!loaded ? 'Loading...' : ''}
-                </div> */}
-
+                <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
                 <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
                     <g className='map-g' ref={this.mapSvgRootGroup}>
                         {loaded && (
@@ -329,6 +331,19 @@ export default class ReactSvgZoomMap extends Component {
                         <g className='pins'>{loaded && this.mapPinsRender()}</g>
                     </g>
                 </svg>
+                {/* <PERCENTAGE_INFO style={{ position: 'absolute', right: '0%', bottom: '5%' }} /> */}
+                <image src={PERCENTAGE_INFO} alt='地圖指標' />
+                <IndicatorWrapper>
+                    <CircleButton>
+                        <ROOM_IN />
+                    </CircleButton>
+                    <CircleButton>
+                        <ROOM_OUT />
+                    </CircleButton>
+                    <CircleButton>
+                        <REFRESH />
+                    </CircleButton>
+                </IndicatorWrapper>
             </div>
         );
     }

@@ -7,7 +7,7 @@ import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
 const Wrapper = styled.div`
     position: absolute;
-    left: 5%;
+    left: 0%;
     top: 5%;
     width: 30%;
     max-width: 450px;

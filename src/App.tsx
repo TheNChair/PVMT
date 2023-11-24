@@ -6,6 +6,7 @@ import ReactSvgZoomMap from '@/components/ReactSvgZoomMap/index.jsx';
 
 const Wrapper = styled.div`
     width: 100vw;
+    height: 100vh;
     position: relative;
 `;
 
