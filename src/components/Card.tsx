@@ -1,8 +1,8 @@
 import { styled } from 'styled-components';
 
-import DDPNormal from '@/assets/indicator/ddp_normal.svg?react';
-import KMTNormal from '@/assets/indicator/kmt_normal.svg?react';
-import PFPNormal from '@/assets/indicator/pfp_normal.svg?react';
+import DDPNormal from '@/assets/indicator/ddp-normal.svg?react';
+import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
+import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
 
 const Wrapper = styled.div`
     width: 100%;
