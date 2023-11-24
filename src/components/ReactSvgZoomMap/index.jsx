@@ -311,39 +311,44 @@ export default class ReactSvgZoomMap extends Component {
         const { className } = this.props;
 
         return (
-            <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
-                <Card
-                    isHover={false}
-                    onClick={this.handleUpperLayerClick}
-                    show={loaded && nowSelect.length > 0}
-                    labelText={this.getNowSelectString()}
-                />
-                <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
-                <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
-                    <g className='map-g' ref={this.mapSvgRootGroup}>
-                        {loaded && (
-                            <g className='map-items'>
-                                {nowSelect.length === 0 && this.mapItemsRender(countyMapData, '-county')}
-                                {nowSelect.length === 1 && this.mapItemsRender(townMapData, '-town')}
-                                {nowSelect.length >= 2 && this.mapItemsRender(villageMapData, '-village')}
-                            </g>
-                        )}
-                        <g className='pins'>{loaded && this.mapPinsRender()}</g>
-                    </g>
-                </svg>
-                {/* <PERCENTAGE_INFO style={{ position: 'absolute', right: '0%', bottom: '5%' }} /> */}
-                <image src={PERCENTAGE_INFO} alt='地圖指標' />
-                <IndicatorWrapper>
-                    <CircleButton>
-                        <ROOM_IN />
-                    </CircleButton>
-                    <CircleButton>
-                        <ROOM_OUT />
-                    </CircleButton>
-                    <CircleButton>
-                        <REFRESH />
-                    </CircleButton>
-                </IndicatorWrapper>
+            <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
+                <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
+                    <Card
+                        isHover={false}
+                        onClick={this.handleUpperLayerClick}
+                        show={loaded && nowSelect.length > 0}
+                        labelText={this.getNowSelectString()}
+                    />
+                    <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
+                    <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
+                        <g className='map-g' ref={this.mapSvgRootGroup}>
+                            {loaded && (
+                                <g className='map-items'>
+                                    {nowSelect.length === 0 && this.mapItemsRender(countyMapData, '-county')}
+                                    {nowSelect.length === 1 && this.mapItemsRender(townMapData, '-town')}
+                                    {nowSelect.length >= 2 && this.mapItemsRender(villageMapData, '-village')}
+                                </g>
+                            )}
+                            <g className='pins'>{loaded && this.mapPinsRender()}</g>
+                        </g>
+                    </svg>
+                    <img
+                        src={PERCENTAGE_INFO}
+                        style={{ position: 'absolute', width: '160px', right: '0%', bottom: '5%' }}
+                        alt='地圖指標'
+                    />
+                    <IndicatorWrapper>
+                        <CircleButton>
+                            <ROOM_IN />
+                        </CircleButton>
+                        <CircleButton>
+                            <ROOM_OUT />
+                        </CircleButton>
+                        <CircleButton>
+                            <REFRESH />
+                        </CircleButton>
+                    </IndicatorWrapper>
+                </div>
             </div>
         );
     }

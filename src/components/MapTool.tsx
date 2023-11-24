@@ -4,6 +4,9 @@ export const IndicatorWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    position: absolute;
+    right: 0%;
+    top: 5%;
 `;
 
 export const CircleButton = styled.div`
