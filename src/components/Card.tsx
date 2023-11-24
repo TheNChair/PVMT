@@ -3,9 +3,13 @@ import { styled } from 'styled-components';
 import DDPNormal from '@/assets/indicator/ddp-normal.svg?react';
 import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
 import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
+import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
 const Wrapper = styled.div`
-    width: 100%;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 30%;
     max-width: 450px;
     padding: 1rem;
     border: 1px solid #9c9c9c;
@@ -77,9 +81,12 @@ interface CandidateMap {
 
 interface CardProps {
     isHover: boolean;
+    onClick: () => void;
+    show: boolean;
+    labelText: string;
 }
 
-const Card = ({ isHover }: CardProps) => {
+const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
     const CANDIDATES: CandidateMap = {
         '1': { id: 1, element: <PFPNormal />, color: '#fff500', name: '宋楚瑜' },
         '2': { id: 2, element: <KMTNormal />, color: '#00e0ff', name: '韓國瑜' },
@@ -109,10 +116,11 @@ const Card = ({ isHover }: CardProps) => {
             remark: '*'
         }
     ];
-
+    console.log(labelText, 'labelText');
     return (
         <Wrapper>
-            <Title>區域名稱</Title>
+            {show && <ICON_BACK className='controls' onClick={onClick} style={{ cursor: 'pointer' }} />}
+            <Title>{labelText.length === 0 ? '全台灣' : labelText}</Title>
             {data
                 .slice()
                 .sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes))

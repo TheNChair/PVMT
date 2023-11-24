@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import anime from 'animejs';
 import axios from 'axios';
-
+import Card from '@/components/Card';
 import '@/components/ReactSvgZoomMap/ReactSvgZoomMap.css';
 
 export default class ReactSvgZoomMap extends Component {
@@ -306,14 +306,16 @@ export default class ReactSvgZoomMap extends Component {
 
         return (
             <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
-                <div className='controls'>
-                    {loaded && nowSelect.length > 0 && <button onClick={this.handleUpperLayerClick}>上一層</button>}
-                </div>
-
-                <div className='labels'>
+                <Card
+                    isHover={false}
+                    onClick={this.handleUpperLayerClick}
+                    show={loaded && nowSelect.length > 0}
+                    labelText={this.getNowSelectString()}
+                />
+                {/* <div className='labels'>
                     {this.getNowSelectString()}
                     {!loaded ? 'Loading...' : ''}
-                </div>
+                </div> */}
 
                 <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
                     <g className='map-g' ref={this.mapSvgRootGroup}>
