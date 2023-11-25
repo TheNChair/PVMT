@@ -4,8 +4,14 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import anime from 'animejs';
 import axios from 'axios';
-
+import Card from '@/components/Card';
 import '@/components/ReactSvgZoomMap/ReactSvgZoomMap.css';
+import MAIN_LOGO from '@/assets/main-page-logo.svg?react';
+import PERCENTAGE_INFO from '@/assets/mapTool/percentage-info.png';
+import ROOM_IN from '@/assets/mapTool/room-in.svg?react';
+import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
+import REFRESH from '@/assets/mapTool/refresh.svg?react';
+import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -41,10 +47,6 @@ export default class ReactSvgZoomMap extends Component {
     };
 
     state = {
-        svgWidth: 1008,
-        svgHeight: 756,
-        svgScale: 10000,
-
         countyJsonData: null,
         townJsonData: null,
         villageJsonData: null,
@@ -305,28 +307,44 @@ export default class ReactSvgZoomMap extends Component {
         const { className } = this.props;
 
         return (
-            <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
-                <div className='controls'>
-                    {loaded && nowSelect.length > 0 && <button onClick={this.handleUpperLayerClick}>上一層</button>}
+            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center' }}>
+                <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
+                    <Card
+                        isHover={false}
+                        onClick={this.handleUpperLayerClick}
+                        show={loaded && nowSelect.length > 0}
+                        labelText={this.getNowSelectString()}
+                    />
+                    <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
+                    <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
+                        <g className='map-g' ref={this.mapSvgRootGroup}>
+                            {loaded && (
+                                <g className='map-items'>
+                                    {nowSelect.length === 0 && this.mapItemsRender(countyMapData, '-county')}
+                                    {nowSelect.length === 1 && this.mapItemsRender(townMapData, '-town')}
+                                    {nowSelect.length >= 2 && this.mapItemsRender(villageMapData, '-village')}
+                                </g>
+                            )}
+                            <g className='pins'>{loaded && this.mapPinsRender()}</g>
+                        </g>
+                    </svg>
+                    <img
+                        src={PERCENTAGE_INFO}
+                        style={{ position: 'absolute', width: '160px', right: 0, bottom: '5%' }}
+                        alt='地圖指標'
+                    />
+                    <IndicatorWrapper>
+                        <CircleButton>
+                            <ROOM_IN />
+                        </CircleButton>
+                        <CircleButton>
+                            <ROOM_OUT />
+                        </CircleButton>
+                        <CircleButton>
+                            <REFRESH />
+                        </CircleButton>
+                    </IndicatorWrapper>
                 </div>
-
-                <div className='labels'>
-                    {this.getNowSelectString()}
-                    {!loaded ? 'Loading...' : ''}
-                </div>
-
-                <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
-                    <g className='map-g' ref={this.mapSvgRootGroup}>
-                        {loaded && (
-                            <g className='map-items'>
-                                {nowSelect.length === 0 && this.mapItemsRender(countyMapData, '-county')}
-                                {nowSelect.length === 1 && this.mapItemsRender(townMapData, '-town')}
-                                {nowSelect.length >= 2 && this.mapItemsRender(villageMapData, '-village')}
-                            </g>
-                        )}
-                        <g className='pins'>{loaded && this.mapPinsRender()}</g>
-                    </g>
-                </svg>
             </div>
         );
     }
