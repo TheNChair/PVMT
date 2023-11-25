@@ -1,11 +1,10 @@
 import { styled } from 'styled-components';
 
-export const IndicatorWrapper = styled.div`
-    /* display: flex;
-    flex-direction: column; */
+export const IndicatorWrapper = styled.div<{ isMobile?: boolean }>`
     position: absolute;
     right: 0;
-    top: 5%;
+    top: ${({ isMobile }) => (isMobile ? undefined : '5%')};
+    bottom: ${({ isMobile }) => (isMobile ? '25%' : undefined)};
 `;
 
 export const CircleButton = styled.span`

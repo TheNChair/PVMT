@@ -7,13 +7,15 @@ import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
 import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
 import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
-const Wrapper = styled.div<{ isHover?: boolean }>`
-    position: absolute;
-    left: 0;
-    top: 5%;
-    right: 0;
-    max-width: 450px;
+const Wrapper = styled.div<{ isHover?: boolean; isMobile?: boolean }>`
+    position: relative;
+    flex-basis: ${({ isMobile }) => (isMobile ? undefined : '40%')};
+    left: ${({ isMobile }) => (isMobile ? undefined : 0)};
+    top: ${({ isMobile }) => (isMobile ? undefined : '5%')};
+    right: ${({ isMobile }) => (isMobile ? undefined : 0)};
+    max-width: ${({ isMobile }) => (isMobile ? undefined : '450px')};
     padding: 1rem;
+    margin: 1rem 0;
     border: 1px solid transparent;
     border-radius: 20px;
     background-clip: padding-box, border-box;
@@ -27,10 +29,10 @@ const Title = styled.h2<{ isHover?: boolean }>`
     color: ${({ isHover }) => (isHover ? 'var(--blue-800)' : 'inherit')};
 `;
 
-const CandidateRow = styled.div<{ elected?: boolean }>`
+const CandidateRow = styled.div<{ elected?: boolean; isMobile?: boolean }>`
     display: flex;
     align-items: center;
-    font-size: ${({ elected }) => (elected ? '20px' : '16px')};
+    font-size: ${({ isMobile }) => (isMobile ? '14px' : '16px')};
     font-weight: ${({ elected }) => (elected ? 'bold' : 'medium')};
     margin: 0.5rem 0;
 `;
@@ -84,6 +86,7 @@ interface CardProps {
     onClick: () => void;
     show: boolean;
     labelText: string;
+    isMobile?: boolean;
 }
 
 const CANDIDATES: Candidate = {
@@ -92,7 +95,7 @@ const CANDIDATES: Candidate = {
     '3': { id: 3, element: <DDPNormal />, color: '#03ff57', name: '蔡英文' }
 };
 
-const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
+const Card = ({ isHover, onClick, show, labelText, isMobile }: CardProps) => {
     console.log(isHover);
 
     //TODO 待串接真實資料
@@ -118,7 +121,7 @@ const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
     ];
     console.log(labelText, 'labelText');
     return (
-        <Wrapper isHover={isHover}>
+        <Wrapper isHover={isHover} isMobile={isMobile}>
             {show && <ICON_BACK className='controls' onClick={onClick} style={{ cursor: 'pointer' }} />}
             <Title isHover={isHover}>{labelText.length === 0 ? '全台灣' : labelText}</Title>
             {data
@@ -128,7 +131,7 @@ const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
                     const elected = remark === '*';
                     const candidateInfo = CANDIDATES[candidate];
                     return (
-                        <CandidateRow key={candidate} elected={elected}>
+                        <CandidateRow key={candidate} elected={elected} isMobile={isMobile}>
                             <CandidateNameWrapper>
                                 <div style={{ width: '25px' }}>
                                     <IndicatorWrapper color={candidateInfo.color} elected={elected}>
