@@ -6,6 +6,12 @@
 }
 
 :root {
+    --primary: #050e39;
+    --secondary: #fff;
+    --blue-800: #05145a;
+    --card-gradient: linear-gradient(to right bottom, #213951, #161e47 18%),
+        linear-gradient(to right bottom, var(--secondary), #161e47);
+    --card-gradient-hover: linear-gradient(var(--secondary), var(--secondary));
     font-family: futura, 'mantouSans', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -14,7 +20,7 @@
 
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #061041;
+    background-color: var(--primary);
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;

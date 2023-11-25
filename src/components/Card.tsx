@@ -7,23 +7,24 @@ import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
 import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
 import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isHover?: boolean }>`
     position: absolute;
     left: 0;
     top: 5%;
     right: 0;
     max-width: 450px;
     padding: 1rem;
-    border: 1px solid #9c9c9c;
-    border-image-slice: 1;
+    border: 1px solid transparent;
     border-radius: 20px;
-    background-clip: padding-box;
-    background: radial-gradient(ellipse at top left, rgba(0, 255, 87, 0.1) 0%, rgba(255, 255, 255, 0) 100%),
-        linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2));
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image: ${({ isHover }) => (isHover ? 'var(--card-gradient-hover)' : 'var(--card-gradient)')};
+    color: ${({ isHover }) => (isHover ? 'var(--primary)' : 'inherit')};
 `;
 
-const Title = styled.h2`
+const Title = styled.h2<{ isHover?: boolean }>`
     font-size: 28px;
+    color: ${({ isHover }) => (isHover ? 'var(--blue-800)' : 'inherit')};
 `;
 
 const CandidateRow = styled.div<{ elected?: boolean }>`
@@ -117,9 +118,9 @@ const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
     ];
     console.log(labelText, 'labelText');
     return (
-        <Wrapper>
+        <Wrapper isHover={isHover}>
             {show && <ICON_BACK className='controls' onClick={onClick} style={{ cursor: 'pointer' }} />}
-            <Title>{labelText.length === 0 ? '全台灣' : labelText}</Title>
+            <Title isHover={isHover}>{labelText.length === 0 ? '全台灣' : labelText}</Title>
             {data
                 .slice()
                 .sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes))
@@ -136,7 +137,10 @@ const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
                                 </div>
                                 <CandidateName>{candidateInfo.name}</CandidateName>
                             </CandidateNameWrapper>
-                            <Amount elected={elected}>{handleFormatNumbers(parseFloat(votes))} 票</Amount>
+                            <Amount elected={elected}>
+                                {handleFormatNumbers(parseFloat(votes))}
+                                <span style={{ fontFamily: 'Noto Sans' }}> 票</span>
+                            </Amount>
                             <Proportion elected={elected}>{voteRate}%</Proportion>
                             <div style={{ flexBasis: '20%' }}>
                                 <RateBar width={voteRate} color={candidateInfo.color}></RateBar>

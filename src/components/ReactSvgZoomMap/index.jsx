@@ -310,7 +310,7 @@ export default class ReactSvgZoomMap extends Component {
             <div style={{ height: '100vh', display: 'flex', justifyContent: 'center' }}>
                 <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
                     <Card
-                        isHover={false}
+                        isHover={true}
                         onClick={this.handleUpperLayerClick}
                         show={loaded && nowSelect.length > 0}
                         labelText={this.getNowSelectString()}
