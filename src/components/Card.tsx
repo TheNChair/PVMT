@@ -1,5 +1,7 @@
 import { styled } from 'styled-components';
 
+import { handleFormatNumbers } from '@/helpers/utilHelper';
+
 import DDPNormal from '@/assets/indicator/ddp-normal.svg?react';
 import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
 import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
@@ -7,9 +9,9 @@ import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
 const Wrapper = styled.div`
     position: absolute;
-    left: 0%;
+    left: 0;
     top: 5%;
-    width: 30%;
+    right: 0;
     max-width: 450px;
     padding: 1rem;
     border: 1px solid #9c9c9c;
@@ -25,20 +27,17 @@ const Title = styled.h2`
 `;
 
 const CandidateRow = styled.div<{ elected?: boolean }>`
-    font-size: 16px;
     display: flex;
-    justify-content: flex-start;
     align-items: center;
-    font-size: ${({ elected }) => (elected ? '16px' : '14px')};
+    font-size: ${({ elected }) => (elected ? '20px' : '16px')};
     font-weight: ${({ elected }) => (elected ? 'bold' : 'medium')};
-    padding: 0.2rem 0;
+    margin: 0.5rem 0;
 `;
 
 const CandidateNameWrapper = styled.div`
     display: flex;
-    justify-content: flex-start;
     position: relative;
-    width: 25%;
+    flex-basis: 25%;
 `;
 
 const CandidateName = styled.span`
@@ -46,11 +45,11 @@ const CandidateName = styled.span`
 `;
 
 const Proportion = styled.span<{ elected: boolean }>`
-    width: 25%;
+    flex-basis: 25%;
 `;
 
 const Amount = styled.span<{ elected: boolean }>`
-    width: 30%;
+    flex-basis: 30%;
 `;
 
 const RateBar = styled.div<{ color: string; width: string }>`
@@ -75,7 +74,7 @@ interface CandidateInfo {
     color: string;
     name: string;
 }
-interface CandidateMap {
+interface Candidate {
     [key: string]: CandidateInfo;
 }
 
@@ -86,13 +85,13 @@ interface CardProps {
     labelText: string;
 }
 
-const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
-    const CANDIDATES: CandidateMap = {
-        '1': { id: 1, element: <PFPNormal />, color: '#fff500', name: '宋楚瑜' },
-        '2': { id: 2, element: <KMTNormal />, color: '#00e0ff', name: '韓國瑜' },
-        '3': { id: 3, element: <DDPNormal />, color: '#03ff57', name: '蔡英文' }
-    };
+const CANDIDATES: Candidate = {
+    '1': { id: 1, element: <PFPNormal />, color: '#fff500', name: '宋楚瑜' },
+    '2': { id: 2, element: <KMTNormal />, color: '#00e0ff', name: '韓國瑜' },
+    '3': { id: 3, element: <DDPNormal />, color: '#03ff57', name: '蔡英文' }
+};
 
+const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
     console.log(isHover);
 
     //TODO 待串接真實資料
@@ -137,9 +136,9 @@ const Card = ({ isHover, onClick, show, labelText }: CardProps) => {
                                 </div>
                                 <CandidateName>{candidateInfo.name}</CandidateName>
                             </CandidateNameWrapper>
-                            <Amount elected={elected}>{votes} 票</Amount>
+                            <Amount elected={elected}>{handleFormatNumbers(parseFloat(votes))} 票</Amount>
                             <Proportion elected={elected}>{voteRate}%</Proportion>
-                            <div style={{ width: '20%' }}>
+                            <div style={{ flexBasis: '20%' }}>
                                 <RateBar width={voteRate} color={candidateInfo.color}></RateBar>
                             </div>
                         </CandidateRow>

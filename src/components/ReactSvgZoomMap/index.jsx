@@ -47,10 +47,6 @@ export default class ReactSvgZoomMap extends Component {
     };
 
     state = {
-        svgWidth: 1008,
-        svgHeight: 756,
-        svgScale: 10000,
-
         countyJsonData: null,
         townJsonData: null,
         villageJsonData: null,
@@ -311,7 +307,7 @@ export default class ReactSvgZoomMap extends Component {
         const { className } = this.props;
 
         return (
-            <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center' }}>
                 <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
                     <Card
                         isHover={false}
@@ -334,7 +330,7 @@ export default class ReactSvgZoomMap extends Component {
                     </svg>
                     <img
                         src={PERCENTAGE_INFO}
-                        style={{ position: 'absolute', width: '160px', right: '0%', bottom: '5%' }}
+                        style={{ position: 'absolute', width: '160px', right: 0, bottom: '5%' }}
                         alt='地圖指標'
                     />
                     <IndicatorWrapper>

@@ -1,5 +1,9 @@
 .react-svg-zoom-map {
+    width: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .react-svg-zoom-map .controls {
