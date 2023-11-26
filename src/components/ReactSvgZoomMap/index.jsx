@@ -12,6 +12,7 @@ import ROOM_IN from '@/assets/mapTool/room-in.svg?react';
 import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
+import { getAreaColor } from '@/helpers/utilHelper';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -361,17 +362,21 @@ export default class ReactSvgZoomMap extends Component {
         return null;
     };
 
-    mapItemRender = (item, index, className) => (
-        <g
-            className={'map-item ' + className}
-            key={className + index}
-            onClick={(e) => this.handleMapItemClick(item.countyName, item.townName, item.villageName, e)}
-            onMouseEnter={(e) => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e)}>
-            <path d={item.d} id={item.location} className='map-item-path'>
-                <title>{item.countyName + item.townName + item.villageName}</title>
-            </path>
-        </g>
-    );
+    mapItemRender = (item, index, className) => {
+        const { COUNTYCODE: countyCode, TOWNCODE: townCode, VILLCODE: villageCode } = item.geoJsonObject.properties;
+        const areaColor = getAreaColor(countyCode, townCode, villageCode);
+        return (
+            <g
+                className={'map-item ' + className}
+                key={className + index}
+                onClick={(e) => this.handleMapItemClick(item.countyName, item.townName, item.villageName, e)}
+                onMouseEnter={(e) => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e)}>
+                <path style={{ fill: areaColor }} d={item.d} id={item.location} className='map-item-path'>
+                    <title>{item.countyName + item.townName + item.villageName}</title>
+                </path>
+            </g>
+        );
+    };
 
     mapPinsRender = () => {
         const { nowSelect, countyMapData, townMapData } = this.state;
