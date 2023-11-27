@@ -44,7 +44,8 @@ module.exports = {
         'no-empty': 'error',
         'react/prop-types': 'off',
         'react/react-in-jsx-scope': 'off',
-        'react/jsx-uses-react': 'off'
+        'react/jsx-uses-react': 'off',
+        'react-hooks/exhaustive-deps': 'warn'
     },
     settings: {
         'import/resolver': {

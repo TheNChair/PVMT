@@ -58,10 +58,10 @@ export default class ReactSvgZoomMap extends Component {
         nowSelect: [],
         nowScale: 1,
         animating: false,
-        svgDisplayParams: [{ scale: 1, top: 0, left: 0 }]
+        svgDisplayParams: [{ scale: 1, top: 0, left: 0 }],
+        isMobile: false
     };
 
-    mapCompRoot = createRef();
     mapSvgRoot = createRef();
     mapSvgRootGroup = createRef();
 
@@ -107,7 +107,7 @@ export default class ReactSvgZoomMap extends Component {
         if (town && !townMapData.find((_) => _.townName === town)) {
             return;
         }
-        if (village && !countyMapData.find((_) => _.villageName === village)) {
+        if (village && !villageMapData.find((_) => _.villageName === village)) {
             return;
         }
 
@@ -120,11 +120,8 @@ export default class ReactSvgZoomMap extends Component {
             return;
         }
 
-        if (this.state.animating || selectArray.length > 2) {
+        if (this.state.animating || selectArray.length > 3) {
             return;
-        }
-        if (selectArray.length === 3) {
-            selectArray[2] = '';
         }
 
         const isZoomIn = selectArray.length > nowSelect.length;
@@ -172,16 +169,16 @@ export default class ReactSvgZoomMap extends Component {
             return;
         }
 
-        const mapCompRootRect = this.mapCompRoot.current.getBoundingClientRect();
         const svgScale =
-            mapCompRootRect.width > mapCompRootRect.height
-                ? (mapCompRootRect.height / 1083.04) * 10000
-                : (mapCompRootRect.width / 1216.83) * 10000;
+            window.innerWidth > window.innerHeight
+                ? (window.innerHeight / 1083.04) * 10000
+                : (window.innerWidth / 1216.83) * 10000;
         this.setState(
             {
-                svgWidth: mapCompRootRect.width,
-                svgHeight: mapCompRootRect.height,
-                svgScale
+                svgWidth: window.innerWidth,
+                svgHeight: window.innerHeight,
+                svgScale,
+                isMobile: window.innerWidth < 768
             },
             () => {
                 this.setState({
@@ -300,22 +297,30 @@ export default class ReactSvgZoomMap extends Component {
     /* Renders */
 
     render() {
-        const { svgWidth, svgHeight, countyMapData, townMapData, villageMapData, nowSelect } = this.state;
+        const { svgWidth, svgHeight, countyMapData, townMapData, villageMapData, nowSelect, isMobile } = this.state;
 
         const loaded = countyMapData;
 
         const { className } = this.props;
 
         return (
-            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center' }}>
-                <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
-                    <Card
-                        isHover={false}
-                        onClick={this.handleUpperLayerClick}
-                        show={loaded && nowSelect.length > 0}
-                        labelText={this.getNowSelectString()}
+            <>
+                <div className={`react-svg-zoom-map${isMobile ? ' mobile' : ''}` + (className ? ` ${className}` : '')}>
+                    {!isMobile && (
+                        <Card
+                            isHover={false}
+                            onClick={this.handleUpperLayerClick}
+                            show={loaded && nowSelect.length > 0}
+                            labelText={this.getNowSelectString()}
+                        />
+                    )}
+                    <MAIN_LOGO
+                        style={
+                            isMobile
+                                ? { position: 'relative', width: '100%' }
+                                : { position: 'absolute', left: 0, bottom: '5%' }
+                        }
                     />
-                    <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
                     <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
                         <g className='map-g' ref={this.mapSvgRootGroup}>
                             {loaded && (
@@ -330,10 +335,14 @@ export default class ReactSvgZoomMap extends Component {
                     </svg>
                     <img
                         src={PERCENTAGE_INFO}
-                        style={{ position: 'absolute', width: '160px', right: 0, bottom: '5%' }}
+                        style={
+                            isMobile
+                                ? { position: 'absolute', width: '120px', left: 0, bottom: '25%' }
+                                : { position: 'absolute', width: '160px', right: 0, bottom: '5%' }
+                        }
                         alt='地圖指標'
                     />
-                    <IndicatorWrapper>
+                    <IndicatorWrapper isMobile={isMobile}>
                         <CircleButton>
                             <ROOM_IN />
                         </CircleButton>
@@ -344,8 +353,16 @@ export default class ReactSvgZoomMap extends Component {
                             <REFRESH />
                         </CircleButton>
                     </IndicatorWrapper>
+                    {isMobile && (
+                        <Card
+                            isMobile
+                            onClick={this.handleUpperLayerClick}
+                            show={loaded && nowSelect.length > 0}
+                            labelText={this.getNowSelectString()}
+                        />
+                    )}
                 </div>
-            </div>
+            </>
         );
     }
 

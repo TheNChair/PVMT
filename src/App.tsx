@@ -5,7 +5,6 @@ import '@/App.css';
 import ReactSvgZoomMap from '@/components/ReactSvgZoomMap/index.jsx';
 
 const Wrapper = styled.div`
-    height: 100vh;
     position: relative;
 `;
 

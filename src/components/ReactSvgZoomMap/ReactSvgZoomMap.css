@@ -1,9 +1,13 @@
 .react-svg-zoom-map {
-    width: 100%;
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+}
+
+.react-svg-zoom-map.mobile {
+    overflow: hidden;
+    display: block;
 }
 
 .react-svg-zoom-map .controls {
@@ -17,8 +21,15 @@
 }
 
 .react-svg-zoom-map > svg {
+    flex-basis: 60%;
     display: block;
-    overflow: visible;
+    position: relative;
+    z-index: 0;
+}
+
+.react-svg-zoom-map.mobile > svg {
+    flex-basis: auto;
+    display: block;
     position: relative;
     z-index: 0;
 }
