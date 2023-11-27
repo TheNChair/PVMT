@@ -140,6 +140,12 @@ export default class ReactSvgZoomMap extends Component {
         onAreaClick && onAreaClick([county, town, village], e);
     };
 
+    getScale = () => {
+        const svgRect = this.mapSvgRoot.current.getBoundingClientRect();
+        const tRect = this.mapSvgRootGroup.current.getBBox();
+        return svgRect.width / tRect.width;
+    };
+
     handleMapItemHover = (county, town, village, e) => {
         const { onAreaHover } = this.props;
         onAreaHover && onAreaHover([county, town, village], e);
@@ -147,6 +153,11 @@ export default class ReactSvgZoomMap extends Component {
 
     handleUpperLayerHover = (e) => {
         const { onAreaLeave } = this.props;
+        if (e) {
+            const cScale = this.getScale();
+            e.target.style.strokeWidth = 0.5 / cScale;
+            e.target.style.stroke = '#000';
+        }
         onAreaLeave && onAreaLeave(e);
     };
 
@@ -245,9 +256,8 @@ export default class ReactSvgZoomMap extends Component {
         const { nowSelect } = this.state;
         const { pinRadiusWithLayer, zoomDuration, zoomDelay } = this.props;
 
-        const svgRect = this.mapSvgRoot.current.getBoundingClientRect();
         const tRect = this.mapSvgRootGroup.current.getBBox();
-        const cScale = svgRect.width / tRect.width;
+        const cScale = this.getScale();
 
         anime({
             targets: this.mapSvgRoot.current.querySelectorAll('.map-item-path'),
@@ -344,7 +354,7 @@ export default class ReactSvgZoomMap extends Component {
                             <g className='pins'>{loaded && this.mapPinsRender()}</g>
                         </g>
                     </svg>
-                    {!isMobile && hoverArea.length ? <>{this.cardItemRender()}</> : <></>}
+                    {!isMobile ? <>{this.cardItemRender()}</> : <></>}
                     <img
                         src={PERCENTAGE_INFO}
                         style={
@@ -380,11 +390,15 @@ export default class ReactSvgZoomMap extends Component {
 
     cardItemRender = () => {
         const { nowSelect } = this.state;
+        const { hoverArea } = this.props;
         if (nowSelect && nowSelect.length >= 3) {
             return null;
         }
-        const { hoverArea } = this.props;
-        const mapItemPathDom = Array.from(this.mapSvgRootGroup.current.querySelectorAll('.map-item-path'));
+        if (!hoverArea.length) {
+            return null;
+        }
+        const mapItemPathDom = this.mapSvgRootGroup.current.querySelectorAll('.map-item-path');
+        const mapItemPathDomArr = Array.from(mapItemPathDom);
         const targetName = hoverArea.reduce((acc, curr) => acc + curr);
         const cardRender = (hoverItem) => {
             const rect = hoverItem.getBoundingClientRect();
@@ -409,17 +423,12 @@ export default class ReactSvgZoomMap extends Component {
                 document.getElementById('root')
             );
         };
-        if (hoverArea.length === 1) {
-            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
-            return hoverItem ? cardRender(hoverItem) : null;
-        }
-        if (hoverArea.length === 2) {
-            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
-            return hoverItem ? cardRender(hoverItem) : null;
-        }
-        if (hoverArea.length >= 3) {
-            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
-            return hoverItem ? cardRender(hoverItem) : null;
+        const hoverItem = mapItemPathDomArr.find(({ textContent }) => textContent === targetName);
+        if (hoverItem) {
+            const cScale = this.getScale();
+            hoverItem.style.strokeWidth = 4 / cScale;
+            hoverItem.style.stroke = '#fff';
+            return cardRender(hoverItem);
         }
         return null;
     };
