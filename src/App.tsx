@@ -11,6 +11,7 @@ const Wrapper = styled.div`
 function App() {
     const [area, setArea] = useState(['', '', '']);
     const [county, town, village] = area;
+    const [hoverArea, setHoverArea] = useState(['', '', '']);
 
     return (
         <Wrapper>
@@ -21,9 +22,12 @@ function App() {
                 county={county}
                 town={town}
                 village={village}
+                hoverArea={hoverArea.filter((item) => item)}
                 onAreaClick={(newArea: string[]) => {
                     setArea(newArea);
                 }}
+                onAreaHover={(newHoverArea: string[]) => setHoverArea(newHoverArea)}
+                onAreaLeave={() => setHoverArea([])}
             />
         </Wrapper>
     );
