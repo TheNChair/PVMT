@@ -22,7 +22,8 @@ const taiwanCitiesAndCounties = [
     '基隆市',
     '新竹市',
     '嘉義市',
-    '連江縣'
+    '連江縣',
+    '金門縣'
 ];
 
 const getCSVData = (filepath) => {
@@ -104,7 +105,7 @@ const convertResult = (dataSource) => {
         dataSource.forEach((item) => {
             let firstLayerKey = item.city + item.county;
             let secondLayerKey = firstLayerKey + item.district;
-            let thirdLayerKey = secondLayerKey + item.village;
+            let thirdLayerKey = secondLayerKey + item.village.slice(1);
 
             if (taiwanCitiesAndCounties.find((city) => city === item.name)) {
                 if (item.village === '0000') {
