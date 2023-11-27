@@ -22,7 +22,8 @@ const taiwanCitiesAndCounties = [
     '基隆市',
     '新竹市',
     '嘉義市',
-    '連江縣'
+    '連江縣',
+    '金門縣'
 ];
 
 const getCSVData = (filepath) => {

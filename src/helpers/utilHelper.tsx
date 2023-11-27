@@ -1,4 +1,4 @@
-import voteData from '../data/voteData2.json';
+import voteData from '../data/voteData.json';
 import colorMapping from '@/enum/colorMapping';
 
 type CandidateCode = '1' | '2' | '3';
