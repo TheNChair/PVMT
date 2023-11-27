@@ -1,4 +1,5 @@
 import { Component, createRef } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
@@ -27,6 +28,7 @@ export default class ReactSvgZoomMap extends Component {
 
         onAreaClick: PropTypes.func,
         onAreaHover: PropTypes.func,
+        onAreaLeave: PropTypes.func,
         onPinClick: PropTypes.func,
         onPinHover: PropTypes.func,
 
@@ -35,7 +37,8 @@ export default class ReactSvgZoomMap extends Component {
 
         county: PropTypes.string,
         town: PropTypes.string,
-        village: PropTypes.string
+        village: PropTypes.string,
+        hoverArea: PropTypes.array
     };
 
     static defaultProps = {
@@ -44,7 +47,8 @@ export default class ReactSvgZoomMap extends Component {
         zoomDuration: 700,
         county: '',
         town: '',
-        village: ''
+        village: '',
+        hoverArea: []
     };
 
     state = {
@@ -59,12 +63,13 @@ export default class ReactSvgZoomMap extends Component {
         nowSelect: [],
         nowScale: 1,
         animating: false,
-        svgDisplayParams: [{ scale: 1, top: 0, left: 0 }]
+        svgDisplayParams: [{ scale: 1, top: 0, left: 0 }],
+        isMobile: false
     };
 
-    mapCompRoot = createRef();
     mapSvgRoot = createRef();
     mapSvgRootGroup = createRef();
+    mapTitleRef = createRef();
 
     /* Life Cycle */
 
@@ -108,7 +113,7 @@ export default class ReactSvgZoomMap extends Component {
         if (town && !townMapData.find((_) => _.townName === town)) {
             return;
         }
-        if (village && !countyMapData.find((_) => _.villageName === village)) {
+        if (village && !villageMapData.find((_) => _.villageName === village)) {
             return;
         }
 
@@ -121,11 +126,8 @@ export default class ReactSvgZoomMap extends Component {
             return;
         }
 
-        if (this.state.animating || selectArray.length > 2) {
+        if (this.state.animating || selectArray.length > 3) {
             return;
-        }
-        if (selectArray.length === 3) {
-            selectArray[2] = '';
         }
 
         const isZoomIn = selectArray.length > nowSelect.length;
@@ -141,6 +143,11 @@ export default class ReactSvgZoomMap extends Component {
     handleMapItemHover = (county, town, village, e) => {
         const { onAreaHover } = this.props;
         onAreaHover && onAreaHover([county, town, village], e);
+    };
+
+    handleUpperLayerHover = (e) => {
+        const { onAreaLeave } = this.props;
+        onAreaLeave && onAreaLeave(e);
     };
 
     handleUpperLayerClick = () => {
@@ -173,16 +180,16 @@ export default class ReactSvgZoomMap extends Component {
             return;
         }
 
-        const mapCompRootRect = this.mapCompRoot.current.getBoundingClientRect();
         const svgScale =
-            mapCompRootRect.width > mapCompRootRect.height
-                ? (mapCompRootRect.height / 1083.04) * 10000
-                : (mapCompRootRect.width / 1216.83) * 10000;
+            window.innerWidth > window.innerHeight
+                ? (window.innerHeight / 1083.04) * 10000
+                : (window.innerWidth / 1216.83) * 10000;
         this.setState(
             {
-                svgWidth: mapCompRootRect.width,
-                svgHeight: mapCompRootRect.height,
-                svgScale
+                svgWidth: window.innerWidth,
+                svgHeight: window.innerWidth < 768 ? window.innerHeight - 200 : window.innerHeight,
+                svgScale,
+                isMobile: window.innerWidth < 768
             },
             () => {
                 this.setState({
@@ -274,6 +281,7 @@ export default class ReactSvgZoomMap extends Component {
                 this.setState({ animating: false });
             },
             update: () => {
+                this.handleUpperLayerHover();
                 this.mapSvgRoot.current.setAttribute(
                     'viewBox',
                     `${rootRect.x} ${rootRect.y} ${rootRect.width} ${rootRect.height}`
@@ -301,22 +309,29 @@ export default class ReactSvgZoomMap extends Component {
     /* Renders */
 
     render() {
-        const { svgWidth, svgHeight, countyMapData, townMapData, villageMapData, nowSelect } = this.state;
+        const { svgWidth, svgHeight, countyMapData, townMapData, villageMapData, nowSelect, isMobile } = this.state;
 
         const loaded = countyMapData;
 
-        const { className } = this.props;
+        const { className, hoverArea } = this.props;
 
         return (
-            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center' }}>
-                <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '')} ref={this.mapCompRoot}>
-                    <Card
-                        isHover={false}
-                        onClick={this.handleUpperLayerClick}
-                        show={loaded && nowSelect.length > 0}
-                        labelText={this.getNowSelectString()}
+            <>
+                <div className={`react-svg-zoom-map${isMobile ? ' mobile' : ''}` + (className ? ` ${className}` : '')}>
+                    {!isMobile && (
+                        <Card
+                            onClick={this.handleUpperLayerClick}
+                            show={loaded && nowSelect.length > 0}
+                            labelText={this.getNowSelectString()}
+                        />
+                    )}
+                    <MAIN_LOGO
+                        style={
+                            isMobile
+                                ? { position: 'relative', width: '100%' }
+                                : { position: 'absolute', left: 0, bottom: '5%' }
+                        }
                     />
-                    <MAIN_LOGO style={{ position: 'absolute', left: '0%', bottom: '5%' }} />
                     <svg width={svgWidth} height={svgHeight} ref={this.mapSvgRoot}>
                         <g className='map-g' ref={this.mapSvgRootGroup}>
                             {loaded && (
@@ -329,12 +344,17 @@ export default class ReactSvgZoomMap extends Component {
                             <g className='pins'>{loaded && this.mapPinsRender()}</g>
                         </g>
                     </svg>
+                    {!isMobile && hoverArea.length ? <>{this.cardItemRender()}</> : <></>}
                     <img
                         src={PERCENTAGE_INFO}
-                        style={{ position: 'absolute', width: '160px', right: 0, bottom: '5%' }}
+                        style={
+                            isMobile
+                                ? { position: 'absolute', width: '120px', left: 0, bottom: '25%' }
+                                : { position: 'absolute', width: '160px', right: 0, bottom: '5%' }
+                        }
                         alt='地圖指標'
                     />
-                    <IndicatorWrapper>
+                    <IndicatorWrapper isMobile={isMobile}>
                         <CircleButton>
                             <ROOM_IN />
                         </CircleButton>
@@ -345,10 +365,64 @@ export default class ReactSvgZoomMap extends Component {
                             <REFRESH />
                         </CircleButton>
                     </IndicatorWrapper>
+                    {isMobile && (
+                        <Card
+                            isMobile
+                            onClick={this.handleUpperLayerClick}
+                            show={loaded && nowSelect.length > 0}
+                            labelText={this.getNowSelectString()}
+                        />
+                    )}
                 </div>
-            </div>
+            </>
         );
     }
+
+    cardItemRender = () => {
+        const { nowSelect } = this.state;
+        if (nowSelect && nowSelect.length >= 3) {
+            return null;
+        }
+        const { hoverArea } = this.props;
+        const mapItemPathDom = Array.from(this.mapSvgRootGroup.current.querySelectorAll('.map-item-path'));
+        const targetName = hoverArea.reduce((acc, curr) => acc + curr);
+        const cardRender = (hoverItem) => {
+            const rect = hoverItem.getBoundingClientRect();
+            const isBottomVisible = rect.bottom + 300 <= window.innerHeight;
+            return createPortal(
+                <Card
+                    show={false}
+                    isHover={true}
+                    labelText={targetName}
+                    coord={
+                        isBottomVisible
+                            ? {
+                                  x: rect.left - 400 + rect.width,
+                                  y: rect.bottom
+                              }
+                            : {
+                                  x: rect.left - 400,
+                                  y: rect.bottom - 250
+                              }
+                    }
+                />,
+                document.getElementById('root')
+            );
+        };
+        if (hoverArea.length === 1) {
+            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
+            return hoverItem ? cardRender(hoverItem) : null;
+        }
+        if (hoverArea.length === 2) {
+            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
+            return hoverItem ? cardRender(hoverItem) : null;
+        }
+        if (hoverArea.length >= 3) {
+            const hoverItem = mapItemPathDom.find(({ textContent }) => textContent === targetName);
+            return hoverItem ? cardRender(hoverItem) : null;
+        }
+        return null;
+    };
 
     mapItemsRender = (mapData, className) => {
         if (mapData) {
@@ -370,7 +444,8 @@ export default class ReactSvgZoomMap extends Component {
                 className={'map-item ' + className}
                 key={className + index}
                 onClick={(e) => this.handleMapItemClick(item.countyName, item.townName, item.villageName, e)}
-                onMouseEnter={(e) => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e)}>
+                onMouseEnter={(e) => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e)}
+                onMouseLeave={(e) => this.handleUpperLayerHover(e)}>
                 <path style={{ fill: areaColor }} d={item.d} id={item.location} className='map-item-path'>
                     <title>{item.countyName + item.townName + item.villageName}</title>
                 </path>

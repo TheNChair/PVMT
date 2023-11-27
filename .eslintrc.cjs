@@ -21,7 +21,6 @@ module.exports = {
     plugins: ['@typescript-eslint', 'react', 'react-hooks', 'react-refresh'],
     rules: {
         'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-        indent: ['error', 4, { SwitchCase: 1 }],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
         'semi-spacing': ['error'],
@@ -44,7 +43,8 @@ module.exports = {
         'no-empty': 'error',
         'react/prop-types': 'off',
         'react/react-in-jsx-scope': 'off',
-        'react/jsx-uses-react': 'off'
+        'react/jsx-uses-react': 'off',
+        'react-hooks/exhaustive-deps': 'warn'
     },
     settings: {
         'import/resolver': {
