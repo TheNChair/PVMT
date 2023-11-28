@@ -348,7 +348,7 @@ export default class ReactSvgZoomMap extends Component {
 
         const loaded = countyMapData;
 
-        const { className, hoverArea } = this.props;
+        const { className } = this.props;
 
         return (
             <>
