@@ -16,9 +16,9 @@ function App() {
     return (
         <Wrapper>
             <ReactSvgZoomMap
-                countyJsonSrc='public/topojsons/taiwan-county.json'
-                townJsonSrc='public/topojsons/taiwan-town.json'
-                villageJsonSrc='public/topojsons/taiwan-village.json'
+                countyJsonSrc='topojsons/taiwan-county.json'
+                townJsonSrc='topojsons/taiwan-town.json'
+                villageJsonSrc='topojsons/taiwan-village.json'
                 county={county}
                 town={town}
                 village={village}

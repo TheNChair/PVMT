@@ -16,6 +16,7 @@
     --green-300: #6bba57; /* 35 ~ 50 */
     --green-200: #80d964; /* 21 ~ 35 */
     --green-100: #9aec7f; /* 0 ~ 20 */
+    --green-hover: rgba(0, 255, 87, 1); /* 用在 hover */
     --blue-primary: #00e0ff;
     --blue-gradient: #1f3258;
     --blue-900: #161e47;
@@ -26,6 +27,7 @@
     --blue-300: #4978d1;
     --blue-200: #5c94ff;
     --blue-100: #7ba8ff;
+    --blue-hover: rgba(0, 224, 255, 1); /* 用在 hover */
     --yellow-primary: #fff500;
     --yellow-gradient: #353b4a;
     --yellow-600: #70681e;
@@ -34,6 +36,7 @@
     --yellow-300: #d0c248;
     --yellow-200: #e9da50;
     --yellow-100: #f2e77c;
+    --yellow-hover: rgba(255, 245, 0, 1); /* 用在 hover */
     border: 1px solid #fff;
     --card-gradient-green: linear-gradient(to right bottom, var(--green-gradient), var(--blue-900) 30%),
         linear-gradient(to right bottom, var(--secondary), var(--blue-900));

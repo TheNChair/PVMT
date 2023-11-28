@@ -9,7 +9,11 @@ import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
 import PFPNormal from '@/assets/indicator/pfp-normal.svg?react';
 import ICON_BACK from '@/assets/mapTool/icon-backspace.svg?react';
 
-const Wrapper = styled.div<{ $color: string; $isHover?: boolean; $coord?: { x: number; y: number } }>`
+const Wrapper = styled.div<{
+    $color: string;
+    $isHover?: boolean;
+    $coord?: { x: number; y: number };
+}>`
     position: ${({ $isHover }) => ($isHover ? 'absolute' : 'relative')};
     flex-basis: ${({ $isHover }) => ($isHover ? undefined : '30%')};
     left: ${({ $isHover, $coord }) => ($isHover ? `${$coord?.x}px` : 0)};
@@ -61,22 +65,25 @@ const CandidateName = styled.span`
     font-family: 'Noto Sans';
 `;
 
-const Proportion = styled.span<{ elected: boolean }>`
+const Proportion = styled.span`
     flex-basis: 25%;
 `;
 
-const Amount = styled.span<{ elected: boolean }>`
+const Amount = styled.span`
     flex-basis: 30%;
 `;
 
-const RateBar = styled.div<{ $color: string; $width: string }>`
-    background: ${({ $color }) => `linear-gradient(to right, var(--${$color}-100), var(--${$color}-600))`};
+const RateBar = styled.div<{ $color: string; $width: string; $isHover: boolean }>`
+    background: ${({ $color, $isHover }) =>
+        $isHover
+            ? `linear-gradient(to right, var(--${$color}-hover), #fff)`
+            : `linear-gradient(to right, var(--${$color}-100), var(--${$color}-600))`};
     width: ${({ $width }) => `calc(100% * ${$width} / 100)`};
     height: 4px;
     border-radius: 20px;
 `;
 
-const IndicatorWrapper = styled.span<{ $color: string; $elected: boolean }>`
+const IndicatorWrapper = styled.div<{ $color: string; $elected: boolean }>`
     & svg {
         margin-left: ${({ $elected }) => ($elected ? '-0.1rem' : 0)};
         filter: ${({ $elected, $color }) => ($elected ? `drop-shadow(2px 2px 8px var(--${$color}-primary))` : '')};
@@ -185,13 +192,16 @@ const Card = ({ isHover, onClick, show, labelText, isMobile, coord, data }: Card
                                 </div>
                                 <CandidateName>{candidateInfo.name}</CandidateName>
                             </CandidateNameWrapper>
-                            <Amount $elected={elected}>
+                            <Amount>
                                 {handleFormatNumbers(parseFloat(votes))}
                                 <span style={{ fontFamily: 'Noto Sans' }}> 票</span>
                             </Amount>
-                            <Proportion elected={elected}>{voteRate}%</Proportion>
+                            <Proportion>{voteRate}%</Proportion>
                             <div style={{ flexBasis: '20%' }}>
-                                <RateBar $width={voteRate} $color={candidateInfo.primaryColor}></RateBar>
+                                <RateBar
+                                    $width={voteRate}
+                                    $color={candidateInfo.primaryColor}
+                                    $isHover={isHover}></RateBar>
                             </div>
                         </CandidateRow>
                     );
@@ -208,9 +218,9 @@ const Card = ({ isHover, onClick, show, labelText, isMobile, coord, data }: Card
     return (
         <>
             {isMobile ? (
-                <WrapperMobile $color={findElectedCandidate()?.primaryColor}>{renderContent()}</WrapperMobile>
+                <WrapperMobile $color={findElectedCandidate()?.primaryColor || '#fff'}>{renderContent()}</WrapperMobile>
             ) : (
-                <Wrapper $isHover={isHover} $color={findElectedCandidate()?.primaryColor} $coord={coord}>
+                <Wrapper $isHover={isHover} $color={findElectedCandidate()?.primaryColor || '#fff'} $coord={coord}>
                     {renderContent()}
                 </Wrapper>
             )}

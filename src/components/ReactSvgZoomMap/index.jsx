@@ -64,7 +64,7 @@ export default class ReactSvgZoomMap extends Component {
         nowSelect: [],
         nowScale: 1,
         animating: false,
-        svgDisplayParams: [{ scale: 1, top: 0, left: 0 }],
+        svgDisplayParams: [{ scale: 5, top: 0, left: 0 }],
         isMobile: false
     };
 
@@ -160,6 +160,11 @@ export default class ReactSvgZoomMap extends Component {
             e.target.style.stroke = '#000';
         }
         onAreaLeave && onAreaLeave(e);
+    };
+
+    handleResetToFirstLayer = () => {
+        const { onAreaClick } = this.props;
+        onAreaClick('', '', '');
     };
 
     handleUpperLayerClick = () => {
@@ -313,6 +318,26 @@ export default class ReactSvgZoomMap extends Component {
     };
 
     /* Getters */
+    // TODO 找沒反應的原因
+    zoomInProjection = () => {
+        const { svgScale } = this.state;
+        const newScale = svgScale * 1.2; // 增加1.2倍的縮放比例（可以根據需求調整）
+
+        this.setState({ svgScale: newScale }, () => {
+            console.log('State updated');
+            this.executeAnimate(true);
+        });
+    };
+
+    zoomOutProjection = () => {
+        const { svgScale } = this.state;
+        const newScale = svgScale * 0.8; // 減少0.8倍的縮放比例（可以根據需求調整）
+
+        this.setState({ svgScale: newScale }, () => {
+            console.log('State updated');
+            this.executeAnimate(true);
+        });
+    };
 
     getProjection = () => {
         const { svgWidth, svgHeight, svgScale } = this.state;
@@ -341,6 +366,9 @@ export default class ReactSvgZoomMap extends Component {
                 <div className={`react-svg-zoom-map${isMobile ? ' mobile' : ''}` + (className ? ` ${className}` : '')}>
                     {!isMobile && (
                         <Card
+                            countyMapData={countyMapData}
+                            townMapData={townMapData}
+                            villageMapData={villageMapData}
                             onClick={this.handleUpperLayerClick}
                             show={loaded && nowSelect.length > 0}
                             labelText={this.getNowSelectString()}
@@ -376,20 +404,23 @@ export default class ReactSvgZoomMap extends Component {
                         }
                         alt='地圖指標'
                     />
-                    <IndicatorWrapper isMobile={isMobile}>
-                        <CircleButton>
+                    <IndicatorWrapper $isMobile={isMobile}>
+                        <CircleButton onClick={this.zoomInProjection}>
                             <ROOM_IN />
                         </CircleButton>
-                        <CircleButton>
+                        <CircleButton onClick={this.zoomOutProjection}>
                             <ROOM_OUT />
                         </CircleButton>
-                        <CircleButton>
+                        <CircleButton onClick={this.handleResetToFirstLayer}>
                             <REFRESH />
                         </CircleButton>
                     </IndicatorWrapper>
                     {isMobile && (
                         <Card
                             isMobile
+                            countyMapData={countyMapData}
+                            townMapData={townMapData}
+                            villageMapData={villageMapData}
                             onClick={this.handleUpperLayerClick}
                             show={loaded && nowSelect.length > 0}
                             labelText={this.getNowSelectString()}
