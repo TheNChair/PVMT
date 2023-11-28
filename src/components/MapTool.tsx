@@ -1,10 +1,10 @@
 import { styled } from 'styled-components';
 
-export const IndicatorWrapper = styled.div<{ isMobile?: boolean }>`
+export const IndicatorWrapper = styled.span<{ $isMobile?: boolean }>`
     position: absolute;
     right: 0;
-    top: ${({ isMobile }) => (isMobile ? undefined : '5%')};
-    bottom: ${({ isMobile }) => (isMobile ? '25%' : undefined)};
+    top: ${({ $isMobile }) => ($isMobile ? undefined : '5%')};
+    bottom: ${({ $isMobile }) => ($isMobile ? '25%' : undefined)};
 `;
 
 export const CircleButton = styled.span`
@@ -18,4 +18,5 @@ export const CircleButton = styled.span`
     border: 0.5px solid;
     border-image-source: linear-gradient(135deg, #ffffff 12.5%, rgba(255, 255, 255, 0) 75%);
     box-shadow: 0px 0px 4px 0px rgba(184, 184, 184, 0.25);
+    cursor: pointer;
 `;
