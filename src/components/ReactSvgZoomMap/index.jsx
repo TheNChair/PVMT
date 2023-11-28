@@ -168,12 +168,15 @@ export default class ReactSvgZoomMap extends Component {
         }
 
         const { nowSelect } = this.state;
-        const { onAreaClick } = this.props;
+        const { onAreaClick, clickArea } = this.props;
 
         const selectArray = nowSelect.slice(0, -1).filter((item) => item);
-        // onAreaClick && onAreaClick([selectArray[0] || '', selectArray[1] || '', selectArray[2] || '']);
         onAreaClick &&
             onAreaClick({
+                ...clickArea,
+                COUNTYCODE: selectArray[0] ? clickArea.COUNTYCODE : undefined,
+                TOWNCODE: selectArray[1] ? clickArea.TOWNCODE : undefined,
+                VILLCODE: selectArray[2] ? clickArea.VILLCODE : undefined,
                 COUNTYNAME: selectArray[0] || '',
                 TOWNNAME: selectArray[1] || '',
                 VILLNAME: selectArray[2] || ''
@@ -409,7 +412,6 @@ export default class ReactSvgZoomMap extends Component {
         }
         const mapItemPathDom = this.mapSvgRootGroup.current.querySelectorAll('.map-item-path');
         const mapItemPathDomArr = Array.from(mapItemPathDom);
-        // const targetName = hoverArea.reduce((acc, curr) => acc + curr);
         const targetName = `${hoverArea.COUNTYNAME ?? ''}${hoverArea.TOWNNAME ?? ''}${hoverArea.VILLNAME ?? ''}`;
         const voteData = getAreaVoteInfo(hoverArea.COUNTYCODE, hoverArea.TOWNCODE, hoverArea.VILLCODE);
         const cardRender = (hoverItem) => {
@@ -460,7 +462,6 @@ export default class ReactSvgZoomMap extends Component {
 
     mapItemRender = (item, index, className) => {
         const { COUNTYCODE: countyCode, TOWNCODE: townCode, VILLCODE: villageCode } = item.geoJsonObject.properties;
-        console.log(item);
         const areaColor = getAreaColor(countyCode, townCode, villageCode);
         return (
             <g
