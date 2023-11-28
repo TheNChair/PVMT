@@ -392,7 +392,7 @@ export default class ReactSvgZoomMap extends Component {
                         }
                         alt='地圖指標'
                     />
-                    <IndicatorWrapper isMobile={isMobile}>
+                    <IndicatorWrapper $isMobile={isMobile}>
                         <CircleButton onClick={this.zoomInProjection}>
                             <ROOM_IN />
                         </CircleButton>
