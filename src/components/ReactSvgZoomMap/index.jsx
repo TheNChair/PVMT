@@ -14,6 +14,7 @@ import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
 import { getAreaColor } from '@/helpers/utilHelper';
+import voteData from '@/data/voteData.json';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -350,14 +351,42 @@ export default class ReactSvgZoomMap extends Component {
 
         const { className } = this.props;
 
+        let voteInfo = null;
+
+        if (this.state.nowSelect.length !== 0) {
+            if (this.state.nowSelect.length === 1) {
+                const countyCode = this.state.countyMapData[0].geoJsonObject.properties.COUNTYCODE;
+                voteInfo = voteData[countyCode].voteInfo;
+            } else if (this.state.nowSelect.length === 2) {
+                const townCode = this.state.townMapData[0].geoJsonObject.properties.TOWNCODE;
+                for (const countyCode in voteData) {
+                    if (voteData[countyCode].towns && voteData[countyCode].towns[townCode]) {
+                        voteInfo = voteData[countyCode].towns[townCode].voteInfo;
+                        break;
+                    }
+                }
+            } else {
+                const villageCode = this.state.villageMapData[0].geoJsonObject.properties.VILLCODE;
+                for (const countyCode in voteData) {
+                    for (const townCode in voteData[countyCode].towns) {
+                        if (
+                            voteData[countyCode].towns[townCode].villages &&
+                            voteData[countyCode].towns[townCode].villages[villageCode]
+                        ) {
+                            voteInfo = voteData[countyCode].towns[townCode].villages[villageCode].voteInfo;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         return (
             <>
                 <div className={`react-svg-zoom-map${isMobile ? ' mobile' : ''}` + (className ? ` ${className}` : '')}>
                     {!isMobile && (
                         <Card
-                            countyMapData={countyMapData}
-                            townMapData={townMapData}
-                            villageMapData={villageMapData}
+                            voteInfo={voteInfo}
                             onClick={this.handleUpperLayerClick}
                             show={loaded && nowSelect.length > 0}
                             labelText={this.getNowSelectString()}

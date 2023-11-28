@@ -101,6 +101,33 @@ interface CandidateMap {
     [key: string]: CandidateInfo;
 }
 
+// interface GeoJsonObject {
+//     countyName: string;
+//     d: string;
+//     geoJsonObject: {
+//         geometry: {
+//             type: string;
+//             coordinates: string[]; // Replace 'any[]' with the actual type for coordinates
+//         };
+//         properties: {
+//             COUNTYID: string;
+//             COUNTYCODE: string;
+//             COUNTYNAME: string;
+//             COUNTYENG: string;
+//         };
+//         type: string;
+//     };
+//     townName: string;
+//     villageName: string;
+// }
+
+interface CandidateData {
+    candidate: string;
+    votes: string;
+    voteRate: string;
+    remark: string;
+}
+
 interface CardProps {
     isHover: boolean;
     onClick?: () => void;
@@ -111,13 +138,7 @@ interface CardProps {
         x: number;
         y: number;
     };
-}
-
-interface CandidateData {
-    candidate: string;
-    votes: string;
-    voteRate: string;
-    remark: string;
+    voteInfo: CandidateData[];
 }
 
 const CANDIDATES: CandidateMap = {
@@ -141,30 +162,30 @@ const CANDIDATES: CandidateMap = {
     }
 };
 
-const Card = ({ isHover, onClick, show, labelText, isMobile, coord }: CardProps) => {
+const Card = ({ isHover, onClick, show, labelText, isMobile, coord, voteInfo }: CardProps) => {
     const [candidateInfoData, setCandidateInfoData] = useState<CandidateData[]>([]);
 
     //TODO 待串接真實資料
-    const data = [
-        {
-            candidate: '1',
-            votes: '10739',
-            voteRate: '3.91',
-            remark: ''
-        },
-        {
-            candidate: '2',
-            votes: '90010',
-            voteRate: '32.80',
-            remark: ''
-        },
-        {
-            candidate: '3',
-            votes: '173657',
-            voteRate: '63.28',
-            remark: '*'
-        }
-    ];
+    // const voteInfo = [
+    //     {
+    //         candidate: '1',
+    //         votes: '10739',
+    //         voteRate: '3.91',
+    //         remark: ''
+    //     },
+    //     {
+    //         candidate: '2',
+    //         votes: '90010',
+    //         voteRate: '32.80',
+    //         remark: ''
+    //     },
+    //     {
+    //         candidate: '3',
+    //         votes: '173657',
+    //         voteRate: '63.28',
+    //         remark: '*'
+    //     }
+    // ];
 
     // 找出當選之候選人
     const findElectedCandidate = () => {
@@ -209,9 +230,11 @@ const Card = ({ isHover, onClick, show, labelText, isMobile, coord }: CardProps)
     };
 
     useEffect(() => {
-        const formattedData = data.slice().sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes));
-        setCandidateInfoData([...formattedData]);
-    }, []);
+        if (voteInfo) {
+            const formattedData = voteInfo.slice().sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes));
+            setCandidateInfoData([...formattedData]);
+        }
+    }, [voteInfo]);
 
     return (
         <>
