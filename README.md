@@ -3,10 +3,10 @@
 探索台灣 2020 總統大選的動態地圖：一眼可見的色彩分佈，快速揭示全台灣各鄉鎮里的選舉動向，帶你深入了解這場歷史性的政治潮流。
 
 1. 以地圖顏色了解區域選舉狀況
-<img src="assets/info-1.png" width="500" height="300">
+<img src="/info-1.png" width="500" height="300">
 
 2. 點擊指定區域，查看該區域選票分佈，維度至鄉鎮里
-<img src="assets/info-2.png" width="500" height="300">
+<img src="/info-2.png" width="500" height="300">
 
 3. 支援 Mobile 格式
    
