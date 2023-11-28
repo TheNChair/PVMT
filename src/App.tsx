@@ -9,9 +9,9 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-    const [area, setArea] = useState(['', '', '']);
-    const [county, town, village] = area;
-    const [hoverArea, setHoverArea] = useState(['', '', '']);
+    const [area, setArea] = useState<{ [key: string]: string }>({});
+    const { COUNTYNAME: county, TOWNNAME: town, VILLNAME: village } = area;
+    const [hoverArea, setHoverArea] = useState<{ [key: string]: string }>({});
 
     return (
         <Wrapper>
@@ -22,12 +22,13 @@ function App() {
                 county={county}
                 town={town}
                 village={village}
-                hoverArea={hoverArea.filter((item) => item)}
-                onAreaClick={(newArea: string[]) => {
+                clickArea={area}
+                hoverArea={hoverArea}
+                onAreaClick={(newArea: { [key: string]: string }) => {
                     setArea(newArea);
                 }}
-                onAreaHover={(newHoverArea: string[]) => setHoverArea(newHoverArea)}
-                onAreaLeave={() => setHoverArea([])}
+                onAreaHover={(newHoverArea: { [key: string]: string }) => setHoverArea(newHoverArea)}
+                onAreaLeave={() => setHoverArea({})}
             />
         </Wrapper>
     );

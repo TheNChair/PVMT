@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 
 import { handleFormatNumbers } from '@/helpers/utilHelper';
+import { VoteInfo } from '@/helpers/utilHelper';
 
 import DDPNormal from '@/assets/indicator/ddp-normal.svg?react';
 import KMTNormal from '@/assets/indicator/kmt-normal.svg?react';
@@ -104,6 +105,7 @@ interface CardProps {
         x: number;
         y: number;
     };
+    data: VoteInfo[];
 }
 
 interface CandidateData {
@@ -134,27 +136,27 @@ const CANDIDATES: CandidateMap = {
     }
 };
 
-const Card = ({ isHover, onClick, show, labelText, isMobile, coord }: CardProps) => {
+const Card = ({ isHover, onClick, show, labelText, isMobile, coord, data }: CardProps) => {
     const [candidateInfoData, setCandidateInfoData] = useState<CandidateData[]>([]);
 
     //TODO 待串接真實資料
-    const data = [
+    const defaultData = [
         {
             candidate: '1',
-            votes: '10739',
-            voteRate: '3.91',
+            votes: '608590',
+            voteRate: '4.26',
             remark: ''
         },
         {
             candidate: '2',
-            votes: '90010',
-            voteRate: '32.80',
+            votes: '5522119',
+            voteRate: '38.61',
             remark: ''
         },
         {
             candidate: '3',
-            votes: '173657',
-            voteRate: '63.28',
+            votes: '8170231',
+            voteRate: '57.13',
             remark: '*'
         }
     ];
@@ -199,9 +201,9 @@ const Card = ({ isHover, onClick, show, labelText, isMobile, coord }: CardProps)
     };
 
     useEffect(() => {
-        const formattedData = data.slice().sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes));
+        const formattedData = (data ?? defaultData).slice().sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes));
         setCandidateInfoData([...formattedData]);
-    }, []);
+    }, [data]);
 
     return (
         <>

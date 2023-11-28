@@ -3,7 +3,7 @@ import colorMapping from '@/enum/colorMapping';
 
 type CandidateCode = '1' | '2' | '3';
 
-interface VoteInfo {
+export interface VoteInfo {
     candidate: CandidateCode;
     votes: string;
     voteRate: string;
@@ -51,19 +51,19 @@ export const handleFormatNumbers = (dataSource: number, digits?: number) => {
     return '0';
 };
 
-export const getAreaColor = (...selectedItems: string[]) => {
+export const getAreaVoteInfo = (...selectedItems: string[]) => {
     const [countyCode, townCode, villageCode] = selectedItems;
-    const electedCallback = (info: VoteInfo) => info.remark === '*';
-    let voteInfo: VoteInfo | undefined;
     if (villageCode) {
-        voteInfo = (voteData as VoteData)[countyCode]?.towns?.[townCode]?.villages?.[villageCode]?.voteInfo.find(
-            electedCallback
-        );
+        return (voteData as VoteData)[countyCode]?.towns?.[townCode]?.villages?.[villageCode]?.voteInfo;
     } else if (townCode) {
-        voteInfo = (voteData as VoteData)[countyCode]?.towns?.[townCode]?.voteInfo.find(electedCallback);
+        return (voteData as VoteData)[countyCode]?.towns?.[townCode]?.voteInfo;
     } else {
-        voteInfo = (voteData as VoteData)[countyCode]?.voteInfo.find(electedCallback);
+        return (voteData as VoteData)[countyCode]?.voteInfo;
     }
+};
+
+export const getAreaColor = (...selectedItems: string[]) => {
+    const voteInfo = getAreaVoteInfo(...selectedItems).find((info: VoteInfo) => info.remark === '*');
     if (!voteInfo) {
         return null;
     }
