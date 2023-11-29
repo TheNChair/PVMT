@@ -441,7 +441,7 @@ export default class ReactSvgZoomMap extends Component {
                                   y: rect.bottom
                               }
                             : {
-                                  x: isKao ? 600 : rect.left - 400,
+                                  x: isKao ? rect.left + 200 : rect.left - 400,
                                   y: rect.bottom - 250
                               }
                     }
