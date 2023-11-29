@@ -13,7 +13,7 @@ import ROOM_IN from '@/assets/mapTool/room-in.svg?react';
 import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
-import { getAreaColor } from '@/helpers/utilHelper';
+import { getAreaVoteInfo, getAreaColor } from '@/helpers/utilHelper';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -38,7 +38,8 @@ export default class ReactSvgZoomMap extends Component {
         county: PropTypes.string,
         town: PropTypes.string,
         village: PropTypes.string,
-        hoverArea: PropTypes.array
+        hoverArea: PropTypes.object,
+        clickArea: PropTypes.object
     };
 
     static defaultProps = {
@@ -48,7 +49,7 @@ export default class ReactSvgZoomMap extends Component {
         county: '',
         town: '',
         village: '',
-        hoverArea: []
+        hoverArea: {}
     };
 
     state = {
@@ -135,9 +136,9 @@ export default class ReactSvgZoomMap extends Component {
         this.setState({ nowSelect: selectArray }, () => this.executeAnimate(isZoomIn));
     };
 
-    handleMapItemClick = (county, town, village, e) => {
+    handleMapItemClick = (itemProps, e) => {
         const { onAreaClick } = this.props;
-        onAreaClick && onAreaClick([county, town, village], e);
+        onAreaClick && onAreaClick(itemProps, e);
     };
 
     getScale = () => {
@@ -146,9 +147,9 @@ export default class ReactSvgZoomMap extends Component {
         return svgRect.width / tRect.width;
     };
 
-    handleMapItemHover = (county, town, village, e) => {
+    handleMapItemHover = (itemProps, e) => {
         const { onAreaHover } = this.props;
-        onAreaHover && onAreaHover([county, town, village], e);
+        onAreaHover && onAreaHover(itemProps, e);
     };
 
     handleUpperLayerHover = (e) => {
@@ -172,10 +173,19 @@ export default class ReactSvgZoomMap extends Component {
         }
 
         const { nowSelect } = this.state;
-        const { onAreaClick } = this.props;
+        const { onAreaClick, clickArea } = this.props;
 
         const selectArray = nowSelect.slice(0, -1).filter((item) => item);
-        onAreaClick && onAreaClick([selectArray[0] || '', selectArray[1] || '', selectArray[2] || '']);
+        onAreaClick &&
+            onAreaClick({
+                ...clickArea,
+                COUNTYCODE: selectArray[0] ? clickArea.COUNTYCODE : undefined,
+                TOWNCODE: selectArray[1] ? clickArea.TOWNCODE : undefined,
+                VILLCODE: selectArray[2] ? clickArea.VILLCODE : undefined,
+                COUNTYNAME: selectArray[0] || '',
+                TOWNNAME: selectArray[1] || '',
+                VILLNAME: selectArray[2] || ''
+            });
     };
 
     handlePinClick = (pinItem, e) => {
@@ -348,7 +358,8 @@ export default class ReactSvgZoomMap extends Component {
 
         const loaded = countyMapData;
 
-        const { className } = this.props;
+        const { className, clickArea } = this.props;
+        const clickVoteData = getAreaVoteInfo(clickArea.COUNTYCODE, clickArea.TOWNCODE, clickArea.VILLCODE);
 
         return (
             <>
@@ -361,6 +372,7 @@ export default class ReactSvgZoomMap extends Component {
                             onClick={this.handleUpperLayerClick}
                             show={loaded && nowSelect.length > 0}
                             labelText={this.getNowSelectString()}
+                            data={clickVoteData}
                         />
                     )}
                     <MAIN_LOGO
@@ -412,6 +424,7 @@ export default class ReactSvgZoomMap extends Component {
                             onClick={this.handleUpperLayerClick}
                             show={loaded && nowSelect.length > 0}
                             labelText={this.getNowSelectString()}
+                            data={clickVoteData}
                         />
                     )}
                 </div>
@@ -425,12 +438,13 @@ export default class ReactSvgZoomMap extends Component {
         if (nowSelect && nowSelect.length >= 3) {
             return null;
         }
-        if (!hoverArea.length) {
+        if (!hoverArea.COUNTYNAME && !hoverArea.TOWNNAME && !hoverArea.VILLNAME) {
             return null;
         }
         const mapItemPathDom = this.mapSvgRootGroup.current.querySelectorAll('.map-item-path');
         const mapItemPathDomArr = Array.from(mapItemPathDom);
-        const targetName = hoverArea.reduce((acc, curr) => acc + curr);
+        const targetName = `${hoverArea.COUNTYNAME ?? ''}${hoverArea.TOWNNAME ?? ''}${hoverArea.VILLNAME ?? ''}`;
+        const voteData = getAreaVoteInfo(hoverArea.COUNTYCODE, hoverArea.TOWNCODE, hoverArea.VILLCODE);
         const cardRender = (hoverItem) => {
             const rect = hoverItem.getBoundingClientRect();
             const isBottomVisible = rect.bottom + 300 <= window.innerHeight;
@@ -439,6 +453,7 @@ export default class ReactSvgZoomMap extends Component {
                     show={false}
                     isHover={true}
                     labelText={targetName}
+                    data={voteData}
                     coord={
                         isBottomVisible
                             ? {
@@ -483,8 +498,8 @@ export default class ReactSvgZoomMap extends Component {
             <g
                 className={'map-item ' + className}
                 key={className + index}
-                onClick={(e) => this.handleMapItemClick(item.countyName, item.townName, item.villageName, e)}
-                onMouseEnter={(e) => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e)}
+                onClick={(e) => this.handleMapItemClick(item.geoJsonObject.properties, e)}
+                onMouseEnter={(e) => this.handleMapItemHover(item.geoJsonObject.properties, e)}
                 onMouseLeave={(e) => this.handleUpperLayerHover(e)}>
                 <path style={{ fill: areaColor }} d={item.d} id={item.location} className='map-item-path'>
                     <title>{item.countyName + item.townName + item.villageName}</title>
