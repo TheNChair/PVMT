@@ -9,11 +9,10 @@ import Card from '@/components/Card';
 import '@/components/ReactSvgZoomMap/ReactSvgZoomMap.css';
 import MAIN_LOGO from '@/assets/main-page-logo.svg?react';
 import PERCENTAGE_INFO from '@/assets/mapTool/percentage-info.png';
-import ROOM_IN from '@/assets/mapTool/room-in.svg?react';
-import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
-import { getAreaVoteInfo, getAreaColor } from '@/helpers/utilHelper';
+import { getAreaVoteInfo, getAreaColor, rgbaToRgb } from '@/helpers/utilHelper';
+import { debounce } from 'lodash';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -85,6 +84,9 @@ export default class ReactSvgZoomMap extends Component {
             loadTopoJson(villageJsonSrc).then((villageJsonData) => this.setState({ villageJsonData }, calcSvg));
 
         window.addEventListener('resize', this.handleResize);
+
+        // 加速 isMobile state 判斷
+        this.setState({ isMobile: window.innerWidth < 768 });
     }
 
     componentWillUnmount() {
@@ -100,9 +102,10 @@ export default class ReactSvgZoomMap extends Component {
 
     /* Event Handler */
 
-    handleResize = () => {
+    // 防抖延遲監聽
+    handleResize = debounce(() => {
         this.calcSvg();
-    };
+    }, 300);
 
     handleAreaUpdate = (...selectArray) => {
         const { countyMapData, townMapData, villageMapData, nowSelect } = this.state;
@@ -156,6 +159,8 @@ export default class ReactSvgZoomMap extends Component {
         const { onAreaLeave } = this.props;
         if (e) {
             const cScale = this.getScale();
+            const fillColor = rgbaToRgb(e.target.style.fill);
+            e.target.style.fill = fillColor;
             e.target.style.strokeWidth = 0.5 / cScale;
             e.target.style.stroke = '#000';
         }
@@ -318,26 +323,6 @@ export default class ReactSvgZoomMap extends Component {
     };
 
     /* Getters */
-    // TODO 找沒反應的原因
-    zoomInProjection = () => {
-        const { svgScale } = this.state;
-        const newScale = svgScale * 1.2; // 增加1.2倍的縮放比例（可以根據需求調整）
-
-        this.setState({ svgScale: newScale }, () => {
-            console.log('State updated');
-            this.executeAnimate(true);
-        });
-    };
-
-    zoomOutProjection = () => {
-        const { svgScale } = this.state;
-        const newScale = svgScale * 0.8; // 減少0.8倍的縮放比例（可以根據需求調整）
-
-        this.setState({ svgScale: newScale }, () => {
-            console.log('State updated');
-            this.executeAnimate(true);
-        });
-    };
 
     getProjection = () => {
         const { svgWidth, svgHeight, svgScale } = this.state;
@@ -399,18 +384,12 @@ export default class ReactSvgZoomMap extends Component {
                         src={PERCENTAGE_INFO}
                         style={
                             isMobile
-                                ? { position: 'absolute', width: '120px', left: 0, bottom: '25%' }
+                                ? { position: 'absolute', width: '120px', left: 0, bottom: '28%' }
                                 : { position: 'absolute', width: '160px', right: 0, bottom: '5%' }
                         }
                         alt='地圖指標'
                     />
                     <IndicatorWrapper $isMobile={isMobile}>
-                        <CircleButton onClick={this.zoomInProjection}>
-                            <ROOM_IN />
-                        </CircleButton>
-                        <CircleButton onClick={this.zoomOutProjection}>
-                            <ROOM_OUT />
-                        </CircleButton>
                         <CircleButton onClick={this.handleResetToFirstLayer}>
                             <REFRESH />
                         </CircleButton>
@@ -471,9 +450,12 @@ export default class ReactSvgZoomMap extends Component {
         };
         const hoverItem = mapItemPathDomArr.find(({ textContent }) => textContent === targetName);
         if (hoverItem) {
-            const cScale = this.getScale();
-            hoverItem.style.strokeWidth = 4 / cScale;
-            hoverItem.style.stroke = '#fff';
+            const fillColor = hoverItem.style.fill;
+            let rgbaFillColor;
+            if (fillColor.indexOf('a') == -1) {
+                rgbaFillColor = fillColor.replace(')', ', 0.75)').replace('rgb', 'rgba');
+            }
+            hoverItem.style.fill = rgbaFillColor;
             return cardRender(hoverItem);
         }
         return null;
