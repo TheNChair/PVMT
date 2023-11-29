@@ -43,5 +43,5 @@
 ## 資料來源
 [選舉公投資料庫：2020 第15任總統副總統選舉](https://db.cec.gov.tw/ElecTable/Election/ElecTickets?dataType=tickets&typeId=ELC&subjectId=P0&legisId=00&themeId=1f7d9f4f6bfe06fdaf4db7df2ed4d60c&dataLevel=N&prvCode=00&cityCode=000&areaCode=00&deptCode=000&liCode=0000)
 
-## Demo 路徑：
+## Demo 路徑
 https://thenchair.github.io/PVMT/
