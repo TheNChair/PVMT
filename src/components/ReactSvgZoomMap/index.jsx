@@ -427,6 +427,7 @@ export default class ReactSvgZoomMap extends Component {
         const cardRender = (hoverItem) => {
             const rect = hoverItem.getBoundingClientRect();
             const isBottomVisible = rect.bottom + 300 <= window.innerHeight;
+            const isKao = hoverArea.COUNTYNAME === '高雄市';
             return createPortal(
                 <Card
                     show={false}
@@ -440,7 +441,7 @@ export default class ReactSvgZoomMap extends Component {
                                   y: rect.bottom
                               }
                             : {
-                                  x: rect.left - 400,
+                                  x: isKao ? 600 : rect.left - 400,
                                   y: rect.bottom - 250
                               }
                     }
