@@ -14,6 +14,7 @@ import ROOM_OUT from '@/assets/mapTool/room-out.svg?react';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
 import { getAreaVoteInfo, getAreaColor } from '@/helpers/utilHelper';
+import { debounce } from 'lodash';
 
 export default class ReactSvgZoomMap extends Component {
     static propTypes = {
@@ -85,6 +86,9 @@ export default class ReactSvgZoomMap extends Component {
             loadTopoJson(villageJsonSrc).then((villageJsonData) => this.setState({ villageJsonData }, calcSvg));
 
         window.addEventListener('resize', this.handleResize);
+
+        // 加速 isMobile state 判斷
+        this.setState({ isMobile: window.innerWidth < 768 });
     }
 
     componentWillUnmount() {
@@ -100,9 +104,10 @@ export default class ReactSvgZoomMap extends Component {
 
     /* Event Handler */
 
-    handleResize = () => {
+    // 防抖延遲監聽
+    handleResize = debounce(() => {
         this.calcSvg();
-    };
+    }, 300);
 
     handleAreaUpdate = (...selectArray) => {
         const { countyMapData, townMapData, villageMapData, nowSelect } = this.state;
