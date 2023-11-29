@@ -34,7 +34,7 @@
   }
 `,Pp=Xl.img`
     animation: ${_p} 2s linear infinite;
-`,Np=Ge.lazy(()=>Sd(()=>import("./index-3f37faf7.js"),["assets/index-3f37faf7.js","assets/index-52e0ac53.css"]));function zp(){const[e,t]=Ge.useState({}),{COUNTYNAME:n,TOWNNAME:r,VILLNAME:l}=e,[o,i]=Ge.useState({});return jt.jsx(Cp,{children:jt.jsx(Ge.Suspense,{fallback:jt.jsx(xp,{children:jt.jsx(Pp,{src:Ep,alt:"loading"})}),children:jt.jsx(Np,{countyJsonSrc:"topojsons/taiwan-county.json",townJsonSrc:"topojsons/taiwan-town.json",villageJsonSrc:"topojsons/taiwan-village.json",county:n,town:r,village:l,clickArea:e,hoverArea:o,onAreaClick:u=>{t(u)},onAreaHover:u=>i(u),onAreaLeave:()=>i({})})})})}var Qa={exports:{}},xe={},Ya={exports:{}},Ka={};/**
+`,Np=Ge.lazy(()=>Sd(()=>import("./index-407c073b.js"),["assets/index-407c073b.js","assets/index-52e0ac53.css"]));function zp(){const[e,t]=Ge.useState({}),{COUNTYNAME:n,TOWNNAME:r,VILLNAME:l}=e,[o,i]=Ge.useState({});return jt.jsx(Cp,{children:jt.jsx(Ge.Suspense,{fallback:jt.jsx(xp,{children:jt.jsx(Pp,{src:Ep,alt:"loading"})}),children:jt.jsx(Np,{countyJsonSrc:"topojsons/taiwan-county.json",townJsonSrc:"topojsons/taiwan-town.json",villageJsonSrc:"topojsons/taiwan-village.json",county:n,town:r,village:l,clickArea:e,hoverArea:o,onAreaClick:u=>{t(u)},onAreaHover:u=>i(u),onAreaLeave:()=>i({})})})})}var Qa={exports:{}},xe={},Ya={exports:{}},Ka={};/**
  * @license React
  * scheduler.production.min.js
  *
