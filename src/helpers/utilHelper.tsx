@@ -81,3 +81,16 @@ export const getAreaColor = (...selectedItems: string[]) => {
     }, null);
     return color;
 };
+
+export const rgbaToRgb = (rgba: string) => {
+    const splitRgba = rgba.split(/\D+/g).filter(Boolean);
+
+    const red = parseInt(splitRgba[0]);
+    const green = parseInt(splitRgba[1]);
+    const blue = parseInt(splitRgba[2]);
+
+    // 構建rgb字串
+    const rgb = 'rgb(' + red + ',' + green + ',' + blue + ')';
+
+    return rgb;
+};

@@ -4,7 +4,7 @@ export const IndicatorWrapper = styled.span<{ $isMobile?: boolean }>`
     position: absolute;
     right: 0;
     top: ${({ $isMobile }) => ($isMobile ? undefined : '5%')};
-    bottom: ${({ $isMobile }) => ($isMobile ? '25%' : undefined)};
+    bottom: ${({ $isMobile }) => ($isMobile ? '28%' : undefined)};
 `;
 
 export const CircleButton = styled.span`

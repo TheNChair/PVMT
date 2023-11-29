@@ -11,7 +11,7 @@ import MAIN_LOGO from '@/assets/main-page-logo.svg?react';
 import PERCENTAGE_INFO from '@/assets/mapTool/percentage-info.png';
 import REFRESH from '@/assets/mapTool/refresh.svg?react';
 import { IndicatorWrapper, CircleButton } from '@/components/MapTool';
-import { getAreaVoteInfo, getAreaColor } from '@/helpers/utilHelper';
+import { getAreaVoteInfo, getAreaColor, rgbaToRgb } from '@/helpers/utilHelper';
 import { debounce } from 'lodash';
 
 export default class ReactSvgZoomMap extends Component {
@@ -159,6 +159,8 @@ export default class ReactSvgZoomMap extends Component {
         const { onAreaLeave } = this.props;
         if (e) {
             const cScale = this.getScale();
+            const fillColor = rgbaToRgb(e.target.style.fill);
+            e.target.style.fill = fillColor;
             e.target.style.strokeWidth = 0.5 / cScale;
             e.target.style.stroke = '#000';
         }
@@ -382,7 +384,7 @@ export default class ReactSvgZoomMap extends Component {
                         src={PERCENTAGE_INFO}
                         style={
                             isMobile
-                                ? { position: 'absolute', width: '120px', left: 0, bottom: '25%' }
+                                ? { position: 'absolute', width: '120px', left: 0, bottom: '28%' }
                                 : { position: 'absolute', width: '160px', right: 0, bottom: '5%' }
                         }
                         alt='地圖指標'
@@ -448,9 +450,12 @@ export default class ReactSvgZoomMap extends Component {
         };
         const hoverItem = mapItemPathDomArr.find(({ textContent }) => textContent === targetName);
         if (hoverItem) {
-            const cScale = this.getScale();
-            hoverItem.style.strokeWidth = 4 / cScale;
-            hoverItem.style.stroke = '#fff';
+            const fillColor = hoverItem.style.fill;
+            let rgbaFillColor;
+            if (fillColor.indexOf('a') == -1) {
+                rgbaFillColor = fillColor.replace(')', ', 0.75)').replace('rgb', 'rgba');
+            }
+            hoverItem.style.fill = rgbaFillColor;
             return cardRender(hoverItem);
         }
         return null;
